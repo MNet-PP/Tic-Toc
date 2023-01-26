@@ -1,31 +1,46 @@
-let origBoard;
-const humanPlayer = "0";
-const aiPlayer = "X";
-const winCombos = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [6, 4, 2],
-];
+let cells = document.querySelectorAll('#field td');
 
-const cells = document.querySelectorAll('.cell');
-startGame();
+start(cells)
 
-function startGame() {
-  document.querySelector('.endgame').style.display = 'none';
-  origBoard = Array.from(Array(9).keys());
+function start(cells) {
+    let i = 0;
 
-  for (let i = 0; i < cells.length; i++) {
-    cells[i].innerText = "";
-    cells[i].style.removeProperty('background-color');
-    cells[i].addEventListener('click', turnClick, false);
+    for(let cell of cells) {
+    cell.addEventListener('click', function step() {
+        this.textContent = ['X', 'O'][i % 2];
+        this.removeEventListener('click', step)
+        
+        if(isVictory(cells)) {
+            alert(this.textContent)
+        } else if (i == 8) {
+            alert('Ничья')
+        }
+        
+        i++;
+    });
   }
 }
 
-function turnClick(square) {
-  console.log(square.target.id);
+function isVictory(cells) {
+    let combos = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
+    for (let comb of combos) {
+        if (
+            cells[comb[0]].textContent == cells[comb[1]].textContent &&
+            cells[comb[1]].textContent == cells[comb[2]].textContent &&
+            cells[comb[0]].textContent != ''
+        ) {
+        return true;
+        }
+    }
+    return false
 }
+
